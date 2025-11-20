@@ -1,0 +1,14 @@
+[build]
+# Tell Netlify where to go before publishing
+base = "VisitorManagementSystem/frontend"
+
+# Publish the frontend folder itself
+publish = "."
+
+# No build step needed because this is static HTML/CSS/JS
+command = ""
+
+[dev]
+# Optional: local dev support
+command = ""
+port = 8888
