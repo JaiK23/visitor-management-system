@@ -1,4 +1,5 @@
-const API_BASE = '/api';
+const API_BASE = "https://visitor-management-system-2lhf.onrender.com/api";
+
 
 // Navigation
 function showSection(sectionId, clickedBtn) {
@@ -269,4 +270,5 @@ function showResult(elementId, message, type) {
 document.addEventListener('DOMContentLoaded', () => {
     loadStats();
 });
+
 
