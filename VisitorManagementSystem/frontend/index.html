@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visitor Management System - Hotel VMS</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1> Visitor Management System</h1>
+            <nav>
+                <button class="nav-btn active" onclick="showSection('dashboard', this)">Dashboard</button>
+                <button class="nav-btn" onclick="showSection('register', this)">Register Visitor</button>
+                <button class="nav-btn" onclick="showSection('checkin', this)">Check-In/Out</button>
+                <button class="nav-btn" onclick="showSection('visitors', this)">Visitors Inside</button>
+            </nav>
+        </header>
+
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="section active">
+            <h2>Dashboard</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Visitors Inside</h3>
+                    <p class="stat-number" id="visitorsInside">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Visitors Outside</h3>
+                    <p class="stat-number" id="visitorsOutside">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Today's Check-Ins</h3>
+                    <p class="stat-number" id="todayCheckIns">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Today's Check-Outs</h3>
+                    <p class="stat-number" id="todayCheckOuts">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Total Visitors</h3>
+                    <p class="stat-number" id="totalVisitors">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Expected Returns</h3>
+                    <p class="stat-number" id="visitorsWithReturnConsent">0</p>
+                </div>
+            </div>
+            <button class="refresh-btn" onclick="loadStats()">Refresh Stats</button>
+        </section>
+
+        <!-- Register Visitor Section -->
+        <section id="register" class="section">
+            <h2>Register New Visitor</h2>
+            <form id="registerForm" class="form">
+                <div class="form-group">
+                    <label for="name">Visitor Name *</label>
+                    <input type="text" id="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone Number *</label>
+                    <input type="tel" id="phone" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email">
+                </div>
+                <div class="form-group">
+                    <label for="aadharNumber">Aadhar Number *</label>
+                    <input type="text" id="aadharNumber" maxlength="12" required>
+                    <small>Last 4 digits will be used as access code</small>
+                </div>
+                <div class="form-group">
+                    <label for="purpose">Purpose of Visit *</label>
+                    <input type="text" id="purpose" required>
+                </div>
+                <div class="form-group">
+                    <label for="hostName">Host Name *</label>
+                    <input type="text" id="hostName" required>
+                </div>
+                <div class="form-group">
+                    <label for="hostPhone">Host Phone *</label>
+                    <input type="tel" id="hostPhone" required>
+                </div>
+                <button type="submit" class="submit-btn">Register Visitor</button>
+            </form>
+            <div id="registerResult" class="result-message"></div>
+            <div id="qrCodeDisplay" class="qr-display"></div>
+        </section>
+
+        <!-- Check-In/Out Section -->
+        <section id="checkin" class="section">
+            <h2>Check-In / Check-Out</h2>
+            <div class="tabs">
+                <button class="tab-btn active" onclick="showCheckTab('checkin')">Check-In</button>
+                <button class="tab-btn" onclick="showCheckTab('checkout')">Check-Out</button>
+            </div>
+            
+            <!-- Check-In Tab -->
+            <div id="checkinTab" class="tab-content active">
+                <form id="checkinForm" class="form">
+                    <div class="form-group">
+                        <label>Verification Method</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="checkinMethod" value="qr" checked> QR Code</label>
+                            <label><input type="radio" name="checkinMethod" value="aadhar"> Aadhar Last 4 Digits</label>
+                        </div>
+                    </div>
+                    <div class="form-group" id="checkinQrGroup">
+                        <label for="checkinQrCode">QR Code Data</label>
+                        <input type="text" id="checkinQrCode" placeholder="Scan or enter QR code">
+                    </div>
+                    <div class="form-group hidden" id="checkinAadharGroup">
+                        <label for="checkinAadharLastFour">Aadhar Last 4 Digits</label>
+                        <input type="text" id="checkinAadharLastFour" maxlength="4" placeholder="Enter last 4 digits">
+                    </div>
+                    <button type="submit" class="submit-btn">Check-In</button>
+                </form>
+            </div>
+
+            <!-- Check-Out Tab -->
+            <div id="checkoutTab" class="tab-content">
+                <form id="checkoutForm" class="form">
+                    <div class="form-group">
+                        <label>Verification Method</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="checkoutMethod" value="qr" checked> QR Code</label>
+                            <label><input type="radio" name="checkoutMethod" value="aadhar"> Aadhar Last 4 Digits</label>
+                        </div>
+                    </div>
+                    <div class="form-group" id="checkoutQrGroup">
+                        <label for="checkoutQrCode">QR Code Data</label>
+                        <input type="text" id="checkoutQrCode" placeholder="Scan or enter QR code">
+                    </div>
+                    <div class="form-group hidden" id="checkoutAadharGroup">
+                        <label for="checkoutAadharLastFour">Aadhar Last 4 Digits</label>
+                        <input type="text" id="checkoutAadharLastFour" maxlength="4" placeholder="Enter last 4 digits">
+                    </div>
+                    <div class="form-group">
+                        <label for="expectedReturnTime">Expected Return Time (Optional)</label>
+                        <input type="datetime-local" id="expectedReturnTime">
+                        <small>If visitor will return, specify when</small>
+                    </div>
+                    <button type="submit" class="submit-btn">Check-Out</button>
+                </form>
+            </div>
+            <div id="checkResult" class="result-message"></div>
+        </section>
+
+        <!-- Visitors Inside Section -->
+        <section id="visitors" class="section">
+            <h2>Visitors Currently Inside</h2>
+            <button class="refresh-btn" onclick="loadVisitorsInside()">Refresh</button>
+            <div id="visitorsList" class="visitors-list"></div>
+        </section>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
