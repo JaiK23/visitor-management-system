@@ -15,6 +15,9 @@
                 <button class="nav-btn" onclick="showSection('register', this)">Register Visitor</button>
                 <button class="nav-btn" onclick="showSection('checkin', this)">Check-In/Out</button>
                 <button class="nav-btn" onclick="showSection('visitors', this)">Visitors Inside</button>
+                <button class="nav-btn" onclick="showSection('food', this)">Order Food</button>
+                <button class="nav-btn" onclick="showSection('feedback', this)">Feedback</button>
+                <button class="nav-btn" onclick="showSection('payment', this)">Payment</button>
             </nav>
         </header>
 
@@ -45,6 +48,29 @@
                 <div class="stat-card">
                     <h3>Expected Returns</h3>
                     <p class="stat-number" id="visitorsWithReturnConsent">0</p>
+                </div>
+            </div>
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Occupancy Split</h3>
+                        <p>Inside vs outside right now</p>
+                    </div>
+                    <canvas id="occupancyChart" height="220"></canvas>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Today's Flow</h3>
+                        <p>Check-ins, check-outs & expected returns</p>
+                    </div>
+                    <canvas id="flowChart" height="220"></canvas>
+                </div>
+                <div class="chart-card wide">
+                    <div class="chart-header">
+                        <h3>Activity Timeline</h3>
+                        <p>Live view of visitors inside and total</p>
+                    </div>
+                    <canvas id="trendChart" height="260"></canvas>
                 </div>
             </div>
             <button class="refresh-btn" onclick="loadStats()">Refresh Stats</button>
@@ -154,8 +180,113 @@
             <button class="refresh-btn" onclick="loadVisitorsInside()">Refresh</button>
             <div id="visitorsList" class="visitors-list"></div>
         </section>
+
+        <!-- Order Food Section -->
+        <section id="food" class="section">
+            <h2>Order Food</h2>
+            <form id="foodOrderForm" class="form">
+                <div class="form-group">
+                    <label for="foodVisitorName">Name *</label>
+                    <input type="text" id="foodVisitorName" required>
+                </div>
+                <div class="form-group">
+                    <label for="foodVisitorPhone">Phone *</label>
+                    <input type="tel" id="foodVisitorPhone" required>
+                </div>
+                <div class="form-group">
+                    <label for="foodLocation">Room / Location</label>
+                    <input type="text" id="foodLocation" placeholder="e.g., Lobby table 3 or Room 210">
+                </div>
+                <div class="form-group">
+                    <label for="foodItems">Order Details *</label>
+                    <textarea id="foodItems" rows="4" required placeholder="List items, quantities, and any dietary notes"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="foodDeliveryTime">Preferred Delivery Time</label>
+                    <input type="time" id="foodDeliveryTime">
+                </div>
+                <div class="form-group">
+                    <label for="foodNotes">Special Instructions</label>
+                    <textarea id="foodNotes" rows="3" placeholder="Allergies, payment method, contactless delivery, etc."></textarea>
+                </div>
+                <button type="submit" class="submit-btn">Place Order</button>
+            </form>
+            <div id="foodOrderResult" class="result-message"></div>
+        </section>
+
+        <!-- Feedback Section -->
+        <section id="feedback" class="section">
+            <h2>Feedback</h2>
+            <form id="feedbackForm" class="form">
+                <div class="form-group">
+                    <label for="feedbackName">Name</label>
+                    <input type="text" id="feedbackName" placeholder="Optional">
+                </div>
+                <div class="form-group">
+                    <label for="feedbackEmail">Email</label>
+                    <input type="email" id="feedbackEmail" placeholder="Optional">
+                </div>
+                <div class="form-group">
+                    <label for="feedbackRating">Rate your experience *</label>
+                    <select id="feedbackRating" required>
+                        <option value="">Select a rating</option>
+                        <option value="5">Excellent</option>
+                        <option value="4">Good</option>
+                        <option value="3">Okay</option>
+                        <option value="2">Poor</option>
+                        <option value="1">Very poor</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="feedbackComments">Comments *</label>
+                    <textarea id="feedbackComments" rows="4" required placeholder="What worked well? What can we improve?"></textarea>
+                </div>
+                <div class="form-group">
+                    <label><input type="checkbox" id="feedbackContact"> I'd like someone to follow up</label>
+                </div>
+                <button type="submit" class="submit-btn">Submit Feedback</button>
+            </form>
+            <div id="feedbackResult" class="result-message"></div>
+        </section>
+
+        <!-- Payment / UPI Section -->
+        <section id="payment" class="section">
+            <h2>Payment & UPI QR</h2>
+            <form id="paymentForm" class="form">
+                <div class="form-group">
+                    <label for="upiId">UPI ID *</label>
+                    <input type="text" id="upiId" required value="hotelvms@upi">
+                    <small>Share this UPI handle with guests or generate a QR below.</small>
+                </div>
+                <div class="form-group">
+                    <label for="upiName">Payee Name</label>
+                    <input type="text" id="upiName" placeholder="e.g., Hotel VMS Front Desk">
+                </div>
+                <div class="form-group">
+                    <label for="upiAmount">Amount (optional)</label>
+                    <input type="number" min="0" step="0.01" id="upiAmount" placeholder="Enter amount to prefill">
+                </div>
+                <div class="form-group">
+                    <label for="upiNote">Payment Note</label>
+                    <input type="text" id="upiNote" placeholder="e.g., Visitor badge deposit">
+                </div>
+                <button type="submit" class="submit-btn">Generate QR Code</button>
+            </form>
+            <div class="qr-display" id="paymentQrBox">
+                <h3>UPI QR Code</h3>
+                <p id="upiStringText">upi://pay?pa=hotelvms@upi</p>
+                <img id="paymentQrImg" alt="UPI QR Code" />
+                <div class="copy-row">
+                    <button class="refresh-btn" type="button" onclick="copyUpiId()">Copy UPI ID</button>
+                    <button class="refresh-btn" type="button" onclick="copyUpiLink()">Copy UPI Link</button>
+                </div>
+                <p class="qr-hint">Scan with any UPI app. Use the form to set amount or notes before sharing.</p>
+            </div>
+            <div id="paymentResult" class="result-message"></div>
+        </section>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
